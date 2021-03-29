@@ -57,31 +57,31 @@ const runPrompt = () => {
             ],
         })
         .then((answer) => {
-            // switch (answer.action) {
-            //     case 'Add':
-            //         runAdd();
-            //         break;
+            switch (answer.action) {
+                case 'Add':
+                    runAdd();
+                    break;
 
-            //     case 'View':
-            runView();
-            //         break;
+                case 'View':
+                    runView();
+                    break;
 
-            //     case 'Update':
-            //         runUpdate();
-            //         break;
+                //     case 'Update':
+                //         runUpdate();
+                //         break;
 
-            //     case 'Delete':
-            //         runDelete();
-            //         break;
+                //     case 'Delete':
+                //         runDelete();
+                //         break;
 
-            //     case 'Exit':
-            //         connection.end();
-            //         break;
+                //     case 'Exit':
+                //         connection.end();
+                //         break;
 
-            //     default:
-            //         console.log(`Invalid action: ${answer.action}`);
-            //         break;
-            // }
+                default:
+                    console.log(`Invalid action: ${answer.action}`);
+                    break;
+            }
         });
 };
 
@@ -126,50 +126,126 @@ const runAdd = () => {
 };
 // add department
 const addDepartment = () => {
-
-    inquirer.prompt([{
-        name: 'first_name',
-        type: 'input',
-        message: 'What is the new employees first name?',
-    },
-    {
-        name: 'last_name',
-        type: 'input',
-        message: 'What is the new employees last name?',
-    },
-    // {
-    //     name: 'first_name',
-    //     type: 'list',
-    //     message: 'What is the new employees role?',
-    //     choices: 
-    // }
-    // {
-    //     name: 'manager_id',
-    //     type: 'list',
-    //     message: 'Who is the new employees manager?',
-    //     choices: 
-    // }
-    {
-        name: 'role_id',
-        type: 'input',
-        message: 'What is the new employees role id?',
-    },
-    {
-        name: 'manager_id',
-        type: 'list',
-        message: 'What is the new employees managers ID?',
-    }
-    ])
+    inquirer
+        .prompt({
+            name: 'name',
+            type: 'input',
+            message: 'What is the name of the new department?',
+        })
+        .then((answer) => {
+            connection.query('INSERT INTO department SET ?',
+                {
+                    name: answer.name,
+                },
+                (err) => {
+                    if (err) throw err;
+                    console.log('Your department was successfully added to the database!');
+                    runPrompt();
+                }
+            )
+        })
 };
 
 // add role 
 const addRole = () => {
-
+    inquirer
+        .prompt([
+            {
+                name: 'title',
+                type: 'input',
+                message: 'What is the title of the new role?',
+            },
+            {
+                name: 'salary',
+                type: 'input',
+                message: 'What is the salary of the new role?',
+                validate(value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return false;
+                },
+            },
+            {
+                name: 'department',
+                type: 'input',
+                message: 'What department is the new role in?',
+            }
+            // {
+            //     name: 'department',
+            //     type: 'list',
+            //     message: 'What department is the new role in?',
+            //     choices: 
+            // }
+        ])
+        .then((answer) => {
+            connection.query('INSERT INTO role SET ?',
+                {
+                    title: answer.title,
+                    salary: answer.salary || 15000,
+                    department_id: answer.department,
+                },
+                (err) => {
+                    if (err) throw err;
+                    console.log('Your role was successfully added to the database!');
+                    runPrompt();
+                }
+            )
+        })
 };
 
 // add employee
 const addEmployee = () => {
 
+    inquirer
+        .prompt([{
+            name: 'first_name',
+            type: 'input',
+            message: 'What is the new employees first name?',
+        },
+        {
+            name: 'last_name',
+            type: 'input',
+            message: 'What is the new employees last name?',
+        },
+        // {
+        //     name: 'first_name',
+        //     type: 'list',
+        //     message: 'What is the new employees role?',
+        //     choices: 
+        // }
+        // {
+        //     name: 'manager_id',
+        //     type: 'list',
+        //     message: 'Who is the new employees manager?',
+        //     choices: 
+        // }
+        {
+            name: 'role_id',
+            type: 'input',
+            message: 'What is the new employees role id?',
+        },
+        {
+            name: 'manager_id',
+            type: 'list',
+            message: 'What is the new employees managers ID?',
+        }
+        ])
+        .then((answer) => {
+            connection.query('INSERT INTO employee SET ?',
+                {
+                    first_name: answer.first_name,
+                    last_name: answer.last_name,
+                    role_id: answer.role_id,
+                    manager_id: answer.manager_id,
+                },
+                (err) => {
+                    if (err) throw err;
+                    console.log('Your employee was successfully added to the database!');
+                    runPrompt();
+                }
+            )
+        })
 };
 
 // VIEW
