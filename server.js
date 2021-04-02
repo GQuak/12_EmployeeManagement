@@ -74,9 +74,9 @@ const runPrompt = () => {
                 //         runDelete();
                 //         break;
 
-                //     case 'Exit':
-                //         connection.end();
-                //         break;
+                     case 'Exit':
+                         connection.end();
+                         break;
 
                 default:
                     console.log(`Invalid action: ${answer.action}`);
